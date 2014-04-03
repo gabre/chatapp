@@ -1,0 +1,19 @@
+.calendar-day {
+	-fx-background-color: linear-gradient(to bottom, #43728e, #6590aa);
+	-fx-background-radius: 0 10 0 0;
+}
+
+.calendar-day-label {
+	-fx-font-size: 1.1em;
+}
+
+.calendar-year-label {
+	-fx-font-size: 1.15em;
+}
+
+.calendar-event {
+	-fx-border-color: #a65b00;
+	-fx-border-width: 1;
+	-fx-background-color: #ffc073;
+	-fx-label-padding: 3;
+}
