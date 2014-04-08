@@ -1,5 +1,7 @@
 package view;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -12,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import app.ChatClientApplication;
 
 public class MainWindow extends Window {
@@ -19,6 +22,9 @@ public class MainWindow extends Window {
 	private TextField tfMessage;
 	
 	private TabPane messageTabs;
+	
+	private HistoryWindow historyWindow;
+	private Stage historyStage;
 
 	public MainWindow(ChatClientApplication app) {
 		super();
@@ -43,6 +49,9 @@ public class MainWindow extends Window {
 		tab.setContent(lvMessages);
 		tab.setClosable(false);
 		messageTabs.getTabs().add(tab);
+		
+		historyWindow = new HistoryWindow(app);
+		historyStage = ChatClientApplication.createWin(historyWindow);
 	}
 
 	@Override
@@ -68,18 +77,26 @@ public class MainWindow extends Window {
 		
 		HBox bottomBox = new HBox(5);
 		
+		Button btnHistory = new Button("Napló");
 		tfMessage.setMaxWidth(Double.MAX_VALUE);
 		bottomBox.getChildren().addAll(
 				tfMessage,
 				new Button("Küldés"),
-				new Button("Napló"));
+				btnHistory);
 		HBox.setHgrow(tfMessage, Priority.ALWAYS);
 		mainPane.setBottom(bottomBox);
 		
 		BorderPane.setMargin(messageTabs, new Insets(0, 5, 0, 0));
 		BorderPane.setMargin(bottomBox, new Insets(5, 0, 0, 0));
-		
 		mainPane.setPadding(new Insets(5));
+		
+		btnHistory.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				historyStage.show();
+			}
+		});
+		
 		return mainPane;
 	}
 
