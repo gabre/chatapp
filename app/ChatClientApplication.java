@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import view.ConnectWindow;
 import view.MainWindow;
 import view.ModalWindow;
 import view.Window;
@@ -16,6 +17,11 @@ public class ChatClientApplication extends Application {
 	// View
 	private MainWindow mainWin;
 	private Stage dialogStage;
+	
+	private ConnectWindow connectWin;
+	private Stage connectStage;
+	
+	private Stage mainStage;
 	
 
 	
@@ -32,13 +38,17 @@ public class ChatClientApplication extends Application {
 		} catch (Exception ex) {
 			System.exit(1);
 		}*/
+		
 
         mainWin = new MainWindow(this);
+        connectWin = new ConnectWindow(this);
         
-        createWin(stage, mainWin);
+        mainStage = createWin(stage, mainWin);
+        connectStage = createWin(connectWin);
 
-        stage.show();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        connectStage.show();
+        //stage.show();
+        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
 				Platform.exit();
@@ -46,7 +56,6 @@ public class ChatClientApplication extends Application {
         });
     }
     
-
     // This method is used to "create windows" or something like that...
     // The first stage is created "by the platform" (according to the docs)
     public static Stage createWin(Window win) {
@@ -67,6 +76,11 @@ public class ChatClientApplication extends Application {
     //
 	public void closeModal() {
 		dialogStage.close();
+	}
+
+	public void onConnection(String text) {
+		mainStage.show();
+		connectStage.hide();
 	}
 
 }
