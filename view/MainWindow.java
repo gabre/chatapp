@@ -22,13 +22,9 @@ public class MainWindow extends Window {
 	private TextField tfMessage;
 	
 	private TabPane messageTabs;
-	
-	private HistoryWindow historyWindow;
-	private Stage historyStage;
 
 	public MainWindow(ChatClientApplication app) {
-		super();
-		this.app = app;
+		super(app);
 		
 		lvChannels = new ListView<>();
 		lvChannels.getItems().addAll("#alma", "#körte", "#csatorna1", "#ggg");
@@ -50,8 +46,6 @@ public class MainWindow extends Window {
 		tab.setClosable(false);
 		messageTabs.getTabs().add(tab);
 		
-		historyWindow = new HistoryWindow(app);
-		historyStage = ChatClientApplication.createWin(historyWindow);
 	}
 
 	@Override
@@ -93,7 +87,7 @@ public class MainWindow extends Window {
 		btnHistory.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				historyStage.show();
+				app.onHistoryWindowOpened();
 			}
 		});
 		

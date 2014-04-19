@@ -8,4 +8,8 @@ public abstract class Window {
 	
 	public abstract String getTitle();
 	public abstract Parent getView();
+	
+	Window(ChatClientApplication app) {
+		this.app = app;
+	}
 }

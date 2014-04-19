@@ -1,5 +1,6 @@
 package app;
  
+import model.Model;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -10,6 +11,7 @@ import view.ConnectWindow;
 import view.MainWindow;
 import view.ModalWindow;
 import view.Window;
+import view.HistoryWindow;
  
 public class ChatClientApplication extends Application {
 	// Model
@@ -21,7 +23,11 @@ public class ChatClientApplication extends Application {
 	private ConnectWindow connectWin;
 	private Stage connectStage;
 	
+	private HistoryWindow historyWin;
+	private Stage historyStage;
+	
 	private Stage mainStage;
+	private Model model;
 	
 
 	
@@ -32,18 +38,14 @@ public class ChatClientApplication extends Application {
 
 	@Override
     public void start(Stage stage) {
-		/*
-		try {
-	        model = new Model();
-		} catch (Exception ex) {
-			System.exit(1);
-		}*/
+		model = new Model();
 		
-
         mainWin = new MainWindow(this);
         connectWin = new ConnectWindow(this);
+        historyWin = new HistoryWindow(this);
         
         mainStage = createWin(stage, mainWin);
+        historyStage = createWin(historyWin);
         connectStage = createWin(connectWin);
 
         connectStage.show();
@@ -79,8 +81,18 @@ public class ChatClientApplication extends Application {
 	}
 
 	public void onConnection(String text) {
+		model.connectTo(text);
 		mainStage.show();
 		connectStage.hide();
+	}
+
+	public void onHistoryWindowOpened() {
+		model.calculateStatistics();
+		historyStage.show();	
+	}
+
+	public Model getModel() {
+		return model;
 	}
 
 }

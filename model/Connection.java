@@ -3,6 +3,13 @@ package model;
 import java.util.List;
 
 public class Connection {
+	
+	private String address;
+	
+	Connection(String address) {
+		this.address = address;
+	}
+	
 	void send(Message message) {
 		
 	}

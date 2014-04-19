@@ -16,7 +16,7 @@ public class ConnectWindow extends Window {
 	private ChatClientApplication app;
 	
 	public ConnectWindow(ChatClientApplication app) {
-		super();
+		super(app);
 		this.app = app;
 		
 		tfAddress = new TextField();

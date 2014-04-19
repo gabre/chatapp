@@ -16,7 +16,7 @@ public class ModalWindow extends Window {
 	private String title;
 	
 	public ModalWindow(String title, String text, ChatClientApplication app) {
-		super();
+		super(app);
 		this.title = title;
 		this.text = text;
 		this.app = app;

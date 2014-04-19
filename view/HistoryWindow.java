@@ -1,6 +1,8 @@
 package view;
 
+import model.Statistics;
 import app.ChatClientApplication;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -14,17 +16,18 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class HistoryWindow extends Window {
-	private ListView<String> lvLogs, lvMessages;
+	private ListView<String> lvLogs;
+	private ListView<Statistics> lvMessages;
+	private ListView<Statistics> statsTab;
 
 	public HistoryWindow(ChatClientApplication app) {
-		super();
+		super(app);
 		
 		lvLogs = new ListView<>();
 		lvLogs.getItems().addAll("Beszélgetés: Gábor");
 		
 		lvMessages = new ListView<>();
-		lvMessages.getItems().addAll("<Gábor> ggg ggg ggg gggg",
-				"<Viktor> kkk k kkkkkk kk");
+		lvMessages.getItems();
 	}
 
 	@Override
@@ -40,20 +43,17 @@ public class HistoryWindow extends Window {
 		VBox leftBox = new VBox(5);
 		leftBox.getChildren().addAll(lvLogs, new Button("Törlés"));
 		logsTab.getChildren().addAll(leftBox, lvMessages);
-		
-		GridPane statsTab = new GridPane();
-		statsTab.setHgap(10);
-		statsTab.setVgap(5);
-		statsTab.addRow(0,
-				new Label("Beszélgetések:"),
-				new Label("1"));
-		statsTab.addRow(1,
-				new Label("Üzenetek:"),
-				new Label("2"));
-		statsTab.addRow(2,
-				new Label("Legtöbb beszélgetés:"),
-				new Label("Viktor"));
-		
+		statsTab = new ListView<Statistics>(app.getModel().getStatistics());
+//		statsTab.addRow(0,
+//				new Label("Beszélgetések:"),
+//				new Label("1"));
+//		statsTab.addRow(1,
+//				new Label("Üzenetek:"),
+//				new Label("2"));
+//		statsTab.addRow(2,
+//				new Label("Legtöbb beszélgetés:"),
+//				new Label("Viktor"));
+//		
 		Tab t1 = new Tab("Üzenetek");
 		t1.setContent(logsTab);
 		Tab t2 = new Tab("Statisztikák");
