@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 
 public class Model {
 	private MessageVisitor statisticsGenerator;
-	private Connection connection;
 	private ObservableList<Statistics> statistics = FXCollections.observableArrayList();
 	
 	List<Message> getChatLogs(Filter filter) {
@@ -32,10 +31,6 @@ public class Model {
 	
 	void deleteChatEvents() {
 		
-	}
-
-	public void connectTo(String text) {
-		connection = new Connection(text);
 	}
 
 	public void calculateStatistics() {

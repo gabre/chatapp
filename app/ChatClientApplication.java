@@ -81,7 +81,6 @@ public class ChatClientApplication extends Application {
 	}
 
 	public void onConnection(String text) {
-		model.connectTo(text);
 		mainStage.show();
 		connectStage.hide();
 	}
