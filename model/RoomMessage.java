@@ -6,15 +6,14 @@ public class RoomMessage extends Message {
 
 	private String roomName;
 	
-	RoomMessage(String fromUserName, Date when, String roomName) {
-		super(fromUserName, when);
+	public RoomMessage(String fromUserName, Date when, String roomName, String message) {
+		super(fromUserName, when, message);
 		this.roomName = roomName;
 	}
 
 	@Override
 	public void acceptVisitor(MessageVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visit(this);
 	}
 
 	public String getRoomName() {

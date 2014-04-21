@@ -1,8 +1,14 @@
 package app;
  
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+import model.Connection;
+import model.Message;
 import model.Model;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -28,8 +34,8 @@ public class ChatClientApplication extends Application {
 	
 	private Stage mainStage;
 	private Model model;
-	
-
+	private Connection conn;
+	private String nickname;
 	
 	// ENTRY POINT
     public static void main(String[] args) {
@@ -56,6 +62,19 @@ public class ChatClientApplication extends Application {
 				Platform.exit();
 			}
         });
+        
+        model.getMessages().addListener(new ListChangeListener<Message>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends Message> change) {
+				while (change.next()) {
+					if (change.getAddedSize() > 0) {
+						for (Message msg : change.getAddedSubList()) {
+							mainWin.onMessage(msg);
+						}
+					}
+				}
+			}
+        });
     }
     
     // This method is used to "create windows" or something like that...
@@ -80,18 +99,44 @@ public class ChatClientApplication extends Application {
 		dialogStage.close();
 	}
 
-	public void onConnection(String text) {
-		mainStage.show();
-		connectStage.hide();
+	public void onConnection(String address, String name) {
+		try {
+			conn = new Connection(address, 12345, name);
+			nickname = name;
+			new Thread(new ConnectionListener(conn, this)).start();
+			//Platform.runLater(new ConnectionListener(conn, this));
+			
+			mainStage.show();
+			connectStage.hide();
+		} catch (IOException e) {
+			dialogStage = createWin(new ModalWindow("Hiba", "Nem sikerült csatlakozni", this));
+			dialogStage.show();
+		}
 	}
 
 	public void onHistoryWindowOpened() {
 		model.calculateStatistics();
 		historyStage.show();	
 	}
+	
+	public void onConnectionLost() {
+		dialogStage = createWin(new ModalWindow("Hiba", "Megszakadt a kapcsolat.", this));
+		dialogStage.show();
+		mainStage.hide();
+		connectStage.show();
+		//model.reset();
+	}
 
 	public Model getModel() {
 		return model;
+	}
+
+	public Connection getConn() {
+		return conn;
+	}
+
+	public String getNickname() {
+		return nickname;
 	}
 
 }

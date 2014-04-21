@@ -13,7 +13,7 @@ public class Connection {
 	private BufferedReader input;
 	private BufferedWriter output;
 	
-	Connection(String address, int port, String name) throws UnknownHostException, IOException {
+	public Connection(String address, int port, String name) throws UnknownHostException, IOException {
 		socket = new Socket(address, port);
 		input = new BufferedReader(
 				new InputStreamReader(
@@ -35,6 +35,7 @@ public class Connection {
 	
 	public ServerEvent receive() throws IOException {
 		String msg = input.readLine();
+		System.out.println(msg);
 		String[] words = msg.split("\\s+");
 		
 		if (words.length == 0) {
@@ -70,20 +71,28 @@ public class Connection {
 		}
 	}
 	
-	public void sendJoin(String chan) throws IOException {
-		send("JOIN " + chan);
+	public void sendJoin(String chan) {
+		try {
+			send("JOIN " + chan);
+		} catch (IOException e) {}
 	}
 	
-	public void sendPart(String chan) throws IOException {
-		send("PART " + chan);
+	public void sendPart(String chan) {
+		try {
+			send("PART " + chan);
+		} catch (IOException e) {}
 	}
 	
-	public void sendChanMessage(String chan, String msg) throws IOException {
-		send("MSG " + chan + " " + msg);
+	public void sendChanMessage(String chan, String msg) {
+		try {
+			send("MSG " + chan + " " + msg);
+		} catch (IOException e) {}
 	}
 	
-	public void sendPrivMsg(String to, String msg) throws IOException {
-		send("PRIVMSG " + to + " " + msg);
+	public void sendPrivMsg(String to, String msg) {
+		try {
+			send("PRIVMSG " + to + " " + msg);
+		} catch (IOException e) {}
 	}
 	
 	private void send(String msg) throws IOException {

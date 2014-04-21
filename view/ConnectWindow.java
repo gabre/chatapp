@@ -4,14 +4,16 @@ import app.ChatClientApplication;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 public class ConnectWindow extends Window {
-	private TextField tfAddress;
+	private TextField tfAddress, tfName;
 	
 	private ChatClientApplication app;
 	
@@ -20,6 +22,7 @@ public class ConnectWindow extends Window {
 		this.app = app;
 		
 		tfAddress = new TextField();
+		tfName = new TextField();
 	}
 
 	@Override
@@ -33,15 +36,17 @@ public class ConnectWindow extends Window {
 		btnConnect.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				app.onConnection(tfAddress.getText());
+				app.onConnection(tfAddress.getText(), tfName.getText());
 			}
 		});
 		
-		HBox box = new HBox(5);
-		box.getChildren().addAll(new Label("Cím:"), tfAddress, btnConnect);
-		box.setPadding(new Insets(5, 5, 5, 5));
+		GridPane grid = new GridPane();
+		grid.addRow(0, new Label("Cím:"), tfAddress);
+		grid.addRow(1, new Label("Felhasználónév:"), tfName);
+		grid.addRow(2,  btnConnect);
+		grid.setPadding(new Insets(5, 5, 5, 5));
 		
-		return box;
+		return grid;
 	}
 
 }

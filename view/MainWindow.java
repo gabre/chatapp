@@ -1,6 +1,13 @@
 package view;
 
+import java.util.HashMap;
+
+import model.Message;
+import model.MessageVisitor;
+import model.PrivateMessage;
+import model.RoomMessage;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -10,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -18,39 +26,43 @@ import javafx.stage.Stage;
 import app.ChatClientApplication;
 
 public class MainWindow extends Window {
-	private ListView<String> lvChannels, lvUsers, lvMessages;
+	private class Session {
+		public boolean roomMsg;
+		public String name;
+		public Session(boolean roomMsg, String name) {
+			this.roomMsg = roomMsg;
+			this.name = name;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			Session s = (Session) obj;
+			return roomMsg == s.roomMsg && name.equals(s.name);
+		}
+		@Override
+		public int hashCode() {
+			return name.hashCode() * (roomMsg ? 1 : 2);
+		}
+	}
+	
+	private ListView<String> lvChannels, lvUsers;
 	private TextField tfMessage;
+	private HashMap<Session, ListView<String>> sessions;
 	
 	private TabPane messageTabs;
 
 	public MainWindow(ChatClientApplication app) {
 		super(app);
 		
-		lvChannels = new ListView<>();
-		lvChannels.getItems().addAll("#alma", "#körte", "#csatorna1", "#ggg");
-		
-		lvUsers = new ListView<>();
-		lvUsers.getItems().addAll("Dénes", "Gábor", "Krisztián", "Viktor");
-		
-		lvMessages = new ListView<>();
-		lvMessages.getItems().addAll(
-				"<Gábor> szia Viktor",
-				"<Viktor> szia.");
-		
+		lvChannels = new ListView<>(app.getModel().getChannels());	
+		lvUsers = new ListView<>(app.getModel().getUsers());
 		tfMessage = new TextField();
-		
+		sessions = new HashMap<>();
 		messageTabs = new TabPane();
-		Tab tab = new Tab();
-		tab.setText("Gábor üzenete");
-		tab.setContent(lvMessages);
-		tab.setClosable(false);
-		messageTabs.getTabs().add(tab);
-		
 	}
 
 	@Override
 	public String getTitle() {
-		return new String("Chat Client");
+		return new String("Chat kliens");
 	}
 
 	@Override
@@ -72,10 +84,11 @@ public class MainWindow extends Window {
 		HBox bottomBox = new HBox(5);
 		
 		Button btnHistory = new Button("Napló");
+		Button btnSend = new Button("Küldés");
 		tfMessage.setMaxWidth(Double.MAX_VALUE);
 		bottomBox.getChildren().addAll(
 				tfMessage,
-				new Button("Küldés"),
+				btnSend,
 				btnHistory);
 		HBox.setHgrow(tfMessage, Priority.ALWAYS);
 		mainPane.setBottom(bottomBox);
@@ -91,7 +104,106 @@ public class MainWindow extends Window {
 			}
 		});
 		
+		btnSend.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				Tab tab = messageTabs.getSelectionModel().getSelectedItem();
+				String msg = tfMessage.getText();
+				if (tab == null || msg.isEmpty()) return;
+				Session s = (Session) tab.getUserData();
+				if (s.roomMsg) {
+					app.getConn().sendChanMessage(s.name, msg);
+				} else {
+					app.getConn().sendPrivMsg(s.name, msg);
+				}
+				((ListView<String>)tab.getContent()).getItems().add("<" + app.getNickname() + "> " + msg);
+			}
+		});
+		
+		lvChannels.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					String chan = lvChannels.getSelectionModel().getSelectedItem();
+					if (chan == null) return;
+					Session s = new Session(true, chan);
+					messageListFor(s);
+					messageTabs.getSelectionModel().select(getTabFor(s));
+				}
+			}
+		});
+		
+		lvUsers.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					String user = lvUsers.getSelectionModel().getSelectedItem();
+					if (user == null) return;
+					Session s = new Session(false, user);
+					messageListFor(s);
+					messageTabs.getSelectionModel().select(getTabFor(s));
+				}
+			}
+		});
+		
 		return mainPane;
+	}
+
+	public void onMessage(Message msg) {
+		System.out.println(msg.toString());
+		class TmpVisitor implements MessageVisitor {
+			public Session s;
+			public String from;
+			@Override
+			public void visit(PrivateMessage message) {
+				s = new Session(false, message.getFromUserName());
+				from = message.getFromUserName();
+			}
+			@Override
+			public void visit(RoomMessage message) {
+				s = new Session(true, message.getRoomName());
+				from = message.getFromUserName();
+			}
+		};
+		TmpVisitor v = new TmpVisitor();
+		msg.acceptVisitor(v);
+		ListView<String> lv = messageListFor(v.s);
+		lv.getItems().add("<" + v.from + "> " + msg.getMessage());
+	}
+	
+	private ListView<String> messageListFor(final Session s) {
+		ListView<String> lv = sessions.get(s);
+		if (lv == null) {
+			lv = new ListView<>();
+			sessions.put(s, lv);
+			Tab tab = new Tab();
+			tab.setText(s.name);
+			tab.setContent(lv);
+			tab.setUserData(s);
+			tab.setOnClosed(new EventHandler<Event>() {
+				@Override
+				public void handle(Event event) {
+					sessions.remove(s);
+					if (s.roomMsg) {
+						app.getConn().sendPart(s.name);
+					}
+				}
+			});
+			messageTabs.getTabs().add(tab);
+			if (s.roomMsg) {
+				app.getConn().sendJoin(s.name);
+			}
+		}
+		return lv;
+	}
+	
+	private Tab getTabFor(Session s) {
+		for (Tab tab : messageTabs.getTabs()) {
+			if (tab.getUserData().equals(s)) {
+				return tab;
+			}
+		}
+		return null;
 	}
 
 }
