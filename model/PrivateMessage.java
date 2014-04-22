@@ -3,9 +3,8 @@ package model;
 import java.util.Date;
 
 public class PrivateMessage extends Message {
-
 	private String toUserName;
-
+	
 	public PrivateMessage(String fromUserName, String toUserName, Date when, String message) {
 		super(fromUserName, when, message);
 		this.toUserName = toUserName;

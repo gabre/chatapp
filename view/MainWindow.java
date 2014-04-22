@@ -1,5 +1,6 @@
 package view;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import model.Message;
@@ -22,7 +23,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import app.ChatClientApplication;
 
 public class MainWindow extends Window {
@@ -111,12 +111,11 @@ public class MainWindow extends Window {
 				String msg = tfMessage.getText();
 				if (tab == null || msg.isEmpty()) return;
 				Session s = (Session) tab.getUserData();
-				if (s.roomMsg) {
-					app.getConn().sendChanMessage(s.name, msg);
-				} else {
-					app.getConn().sendPrivMsg(s.name, msg);
-				}
-				((ListView<String>)tab.getContent()).getItems().add("<" + app.getNickname() + "> " + msg);
+				String me = app.getModel().getUserInfo().getUserName();
+				Message msgObj = s.roomMsg
+						? new RoomMessage(me, new Date(), s.name, msg)
+				        : new PrivateMessage(me, s.name, new Date(), msg);
+				app.send(msgObj);
 			}
 		});
 		
@@ -156,7 +155,11 @@ public class MainWindow extends Window {
 			public String from;
 			@Override
 			public void visit(PrivateMessage message) {
-				s = new Session(false, message.getFromUserName());
+				if (message.getToUserName().equals(app.getModel().getUserInfo().getUserName())) {
+					s = new Session(false, message.getFromUserName());
+				} else {
+					s = new Session(false, message.getToUserName());
+				}
 				from = message.getFromUserName();
 			}
 			@Override
@@ -168,7 +171,7 @@ public class MainWindow extends Window {
 		TmpVisitor v = new TmpVisitor();
 		msg.acceptVisitor(v);
 		ListView<String> lv = messageListFor(v.s);
-		lv.getItems().add("<" + v.from + "> " + msg.getMessage());
+		lv.getItems().add(msg.getWhen().toString() + " <" + v.from + "> " + msg.getMessage());
 	}
 	
 	private ListView<String> messageListFor(final Session s) {

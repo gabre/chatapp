@@ -1,11 +1,7 @@
 package app;
  
 import java.io.IOException;
-import java.net.UnknownHostException;
 
-import model.Connection;
-import model.Message;
-import model.Model;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -13,11 +9,17 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.Connection;
+import model.Message;
+import model.MessageVisitor;
+import model.Model;
+import model.PrivateMessage;
+import model.RoomMessage;
 import view.ConnectWindow;
+import view.HistoryWindow;
 import view.MainWindow;
 import view.ModalWindow;
 import view.Window;
-import view.HistoryWindow;
  
 public class ChatClientApplication extends Application {
 	// Model
@@ -35,7 +37,6 @@ public class ChatClientApplication extends Application {
 	private Stage mainStage;
 	private Model model;
 	private Connection conn;
-	private String nickname;
 	
 	// ENTRY POINT
     public static void main(String[] args) {
@@ -104,10 +105,9 @@ public class ChatClientApplication extends Application {
 	public void onConnection(String address, String name) {
 		try {
 			conn = new Connection(address, 12345, name);
-			nickname = name;
-			new Thread(new ConnectionListener(nickname, conn, this)).start();
+			new Thread(new ConnectionListener(name, conn, this)).start();
 			//Platform.runLater(new ConnectionListener(conn, this));
-			model.startConnection(nickname);
+			model.startConnection(name);
 			mainStage.show();
 			connectStage.hide();
 		} catch (IOException e) {
@@ -137,8 +137,19 @@ public class ChatClientApplication extends Application {
 		return conn;
 	}
 
-	public String getNickname() {
-		return nickname;
+	public void send(Message msg) {
+		msg.acceptVisitor(new MessageVisitor() {
+			@Override
+			public void visit(PrivateMessage message) {
+				conn.sendPrivMsg(message.getToUserName(), message.getMessage());
+				model.getMessages().add(message);
+			}
+			@Override
+			public void visit(RoomMessage message) {
+				conn.sendChanMessage(message.getRoomName(), message.getMessage());
+				model.getMessages().add(message);
+			}
+		});
 	}
 
 }

@@ -18,6 +18,10 @@ public class Model {
 		userInfo = new UserSettings(userName);
 	}
 	
+	public UserSettings getUserInfo() {
+		return userInfo;
+	}
+	
 	public ObservableList<String> getChannels() {
 		return channels;
 	}
