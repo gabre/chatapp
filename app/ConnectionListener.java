@@ -12,10 +12,12 @@ import model.ServerEvent;
 public class ConnectionListener extends Task<Void> {
 	private Connection conn;
 	private ChatClientApplication app;
+	private String userName;
 	
-	public ConnectionListener(Connection conn, ChatClientApplication app) {
+	public ConnectionListener(String userName, Connection conn, ChatClientApplication app) {
 		this.conn = conn;
 		this.app = app;
+		this.userName = userName;
 	}
 
 	private String unwordsFrom(int k, String[] args) {
@@ -62,7 +64,7 @@ public class ConnectionListener extends Task<Void> {
 						case PRIV_MSG: {
 							String from = event.getArgs()[1];
 							String msg = unwordsFrom(2, event.getArgs());
-							app.getModel().getMessages().add(new PrivateMessage(from, new Date(), msg));
+							app.getModel().getMessages().add(new PrivateMessage(from, userName, new Date(), msg));
 							break;
 						}
 						}

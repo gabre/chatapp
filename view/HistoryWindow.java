@@ -24,7 +24,7 @@ public class HistoryWindow extends Window {
 		super(app);
 		
 		lvLogs = new ListView<>();
-		lvLogs.getItems().addAll("Beszélgetés: Gábor");
+		// lvLogs.getItems().addAll("Beszélgetés: Gábor");
 		
 		lvMessages = new ListView<>();
 		lvMessages.getItems();

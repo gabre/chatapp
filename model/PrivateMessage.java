@@ -4,13 +4,20 @@ import java.util.Date;
 
 public class PrivateMessage extends Message {
 
-	public PrivateMessage(String fromUserName, Date when, String message) {
+	private String toUserName;
+
+	public PrivateMessage(String fromUserName, String toUserName, Date when, String message) {
 		super(fromUserName, when, message);
+		this.toUserName = toUserName;
 	}
 
 	@Override
 	public void acceptVisitor(MessageVisitor visitor) {
 		visitor.visit(this);
+	}
+	
+	public String getToUserName() {
+		return toUserName;
 	}
 
 }

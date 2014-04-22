@@ -6,12 +6,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Model {
+	private UserSettings userInfo;
 	private ObservableList<String> channels = FXCollections.observableArrayList();
 	private ObservableList<String> users = FXCollections.observableArrayList();
 	private ObservableList<Message> messages = FXCollections.observableArrayList();
 	
-	private MessageVisitor statisticsGenerator;
+	private StatisticsCollector statisticsGenerator;
 	private ObservableList<Statistics> statistics = FXCollections.observableArrayList();
+	
+	public void startConnection(String userName) {
+		userInfo = new UserSettings(userName);
+	}
 	
 	public ObservableList<String> getChannels() {
 		return channels;
@@ -51,7 +56,12 @@ public class Model {
 
 	public void calculateStatistics() {
 		statistics.clear();
-		statistics.add(new Statistics("Statisztika 1", "ertek 1"));
+		statisticsGenerator = new StatisticsCollector(userInfo.getUserName());
+		for(Message message : messages) {
+			message.acceptVisitor(statisticsGenerator);
+		}
+		statistics.addAll(statisticsGenerator.getStatistics());
+		
 	}
 
 	public ObservableList<Statistics> getStatistics() {

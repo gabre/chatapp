@@ -44,6 +44,8 @@ public class ChatClientApplication extends Application {
 
 	@Override
     public void start(Stage stage) {
+		// this part could be moved to the connecting part
+		// 
 		model = new Model();
 		
         mainWin = new MainWindow(this);
@@ -103,9 +105,9 @@ public class ChatClientApplication extends Application {
 		try {
 			conn = new Connection(address, 12345, name);
 			nickname = name;
-			new Thread(new ConnectionListener(conn, this)).start();
+			new Thread(new ConnectionListener(nickname, conn, this)).start();
 			//Platform.runLater(new ConnectionListener(conn, this));
-			
+			model.startConnection(nickname);
 			mainStage.show();
 			connectStage.hide();
 		} catch (IOException e) {
