@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Connection;
@@ -150,6 +151,14 @@ public class ChatClientApplication extends Application {
 				model.getMessages().add(message);
 			}
 		});
+	}
+	
+	public void showMessage(String message)
+	{
+		ModalWindow mWin = new ModalWindow("Info", message, this);
+		dialogStage = createWin(mWin);
+		dialogStage.initModality(Modality.APPLICATION_MODAL);
+		dialogStage.showAndWait();
 	}
 
 }

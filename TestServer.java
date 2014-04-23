@@ -8,7 +8,7 @@ import java.net.Socket;
 public class TestServer {
 
 	public static void main(String[] args) throws Exception {
-		ServerSocket sock = new ServerSocket(12345);
+		ServerSocket sock = new ServerSocket(12346);
 		sock.setReuseAddress(true);
 		Socket client = sock.accept();
 		BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));

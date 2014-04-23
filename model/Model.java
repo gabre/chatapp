@@ -1,6 +1,7 @@
 package model;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,9 +11,11 @@ public class Model {
 	private ObservableList<String> channels = FXCollections.observableArrayList();
 	private ObservableList<String> users = FXCollections.observableArrayList();
 	private ObservableList<Message> messages = FXCollections.observableArrayList();
+	private ObservableList<Message> messagesModel;
 	
 	private StatisticsCollector statisticsGenerator;
 	private ObservableList<Statistics> statistics = FXCollections.observableArrayList();
+	private ObservableList<Entry<String, Integer>> bestFriends = FXCollections.observableArrayList();
 	
 	public void startConnection(String userName) {
 		userInfo = new UserSettings(userName);
@@ -31,31 +34,38 @@ public class Model {
 	}
 
 	public ObservableList<Message> getMessages() {
-		return messages;
+		messagesModel = FXCollections.observableArrayList(messages);
+		return messagesModel;
 	}
 
-	List<Message> getChatLogs(Filter filter) {
-		return null;
-		
+	public void applyNoFilter() {
+		messagesModel.clear();
+		messagesModel.addAll(messages);
 	}
 	
-	List<ChatEvent> getChatEvents(Filter filter) {
-		return null;
-		
+	public void filterPrivates() {
+		for(Message message : messages) {
+			if(!(message instanceof PrivateMessage)) {
+				messagesModel.remove(message);
+			}
+		}
 	}
 	
-	List<ChatElement> getHistory(Filter filter) {
-		return null;
-		
+	public void filterRoomMessages() {
+		for(Message message : messages) {
+			if(!(message instanceof RoomMessage)) {
+				messagesModel.remove(message);
+			}
+		}		
 	}
 	
-	void deleteChatEvent(ChatEvent event) {
-		
+	public void deleteChatEvent(Message selectedMessage) {
+		messages.remove(selectedMessage);
 	}
 	
 	
-	void deleteChatEvents() {
-		
+	public void deleteChatEvents() {
+		messages.clear();
 	}
 
 	public void calculateStatistics() {
@@ -65,10 +75,16 @@ public class Model {
 			message.acceptVisitor(statisticsGenerator);
 		}
 		statistics.addAll(statisticsGenerator.getStatistics());
-		
+		bestFriends.clear();
+		bestFriends.addAll(statisticsGenerator.getBestFriends());
 	}
 
 	public ObservableList<Statistics> getStatistics() {
 		return statistics;
 	}
+	
+	public ObservableList<Entry<String, Integer>> getBestFriends() {
+		return bestFriends;
+	}
+
 }

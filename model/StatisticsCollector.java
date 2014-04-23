@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map.Entry;
 
 public class StatisticsCollector implements MessageVisitor {
 
+	private static final String BEST_FRIEND = "Best friend";
 	private static final String sentPrivates = "Sent privates";
 	private static final String receivedPrivates = "Received privates";
 	private static final String privates = "All privates";
@@ -24,10 +27,12 @@ public class StatisticsCollector implements MessageVisitor {
 	
 	private String user;
 	private Map<String,Integer> statistics;
+	private Map<String,Integer> msgPerUser;
 
 	public StatisticsCollector(String userName) {
 		user = userName;
 		statistics = new HashMap<String,Integer>();
+		msgPerUser = new HashMap<String,Integer>();
 		addAllStatistic();
 	}
 
@@ -40,13 +45,52 @@ public class StatisticsCollector implements MessageVisitor {
 		incrementShortPrivatesIfNeeded(message);
 		incrementFWordIfNeeded(message);
 		incrementTooLoud(message);
+		increaseFriendMsgCount(message);
 	}
-
+	
 	@Override
 	public void visit(RoomMessage message) {
 		incrementFWordIfNeeded(message);
 		increaseStatisticValue(roomMsgs);
 		incrementTooLoud(message);
+	}
+	
+	public List<Statistics> getStatistics() {
+		List<Statistics> statisticsList = new LinkedList<Statistics>();
+		for(Entry<String,Integer> entry : statistics.entrySet()) {
+			statisticsList.add(new Statistics(entry.getKey(), entry.getValue().toString()));
+		}
+		return statisticsList;
+	}
+	
+	public List<Entry<String,Integer>> getBestFriends() {
+		Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String, Integer>>() {
+		    @Override
+		    public int compare(final Entry<String, Integer> x, final Entry<String, Integer> y){
+		        return x.getValue() - y.getValue();
+		    }
+		};
+		List<Entry<String, Integer>> friends = new LinkedList<Entry<String, Integer>>(msgPerUser.entrySet());
+		Collections.sort(friends, comparator);
+		
+		return friends;
+	}
+
+	private void increaseFriendMsgCount(PrivateMessage message) {
+		if(message.getFromUserName().equals(user)) {
+			increaseFriendMsgCountWithName(message.getToUserName());
+		} else {
+			increaseFriendMsgCountWithName(message.getFromUserName());
+		}
+	}
+	
+	private void increaseFriendMsgCountWithName(String name) {
+		Integer value = msgPerUser.get(name);
+		if(value != null) {
+			msgPerUser.put(name, value + 1);
+		} else {
+			msgPerUser.put(name, 1);
+		}
 	}
 	
 	private void incrementTooLoud(Message message) {
@@ -99,14 +143,6 @@ public class StatisticsCollector implements MessageVisitor {
 		statistics.put(theWordWithFused, 0);
 		statistics.put(roomMsgs, 0);
 		statistics.put(tooLoud, 0);
-	}
-	
-	public List<Statistics> getStatistics() {
-		List<Statistics> statisticsList = new LinkedList<Statistics>();
-		for(Entry<String,Integer> entry : statistics.entrySet()) {
-			statisticsList.add(new Statistics(entry.getKey(), entry.getValue().toString()));
-		}
-		return statisticsList;
 	}
 
 }
