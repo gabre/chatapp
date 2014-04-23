@@ -60,12 +60,14 @@ public class ChatClientApplication extends Application {
 
         connectStage.show();
         //stage.show();
-        mainStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        EventHandler<WindowEvent> exitAction = new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				Platform.exit();
+				System.exit(0);
 			}
-        });
+        };
+        mainStage.setOnCloseRequest(exitAction);
+        connectStage.setOnCloseRequest(exitAction);
         
         model.getMessages().addListener(new ListChangeListener<Message>() {
 			@Override
@@ -109,6 +111,7 @@ public class ChatClientApplication extends Application {
 			new Thread(new ConnectionListener(name, conn, this)).start();
 			//Platform.runLater(new ConnectionListener(conn, this));
 			model.startConnection(name);
+			mainWin.setDisplayedUsername(model.getUserInfo().getUserName());
 			mainStage.show();
 			connectStage.hide();
 		} catch (IOException e) {

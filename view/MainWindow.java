@@ -45,6 +45,7 @@ public class MainWindow extends Window {
 	}
 	
 	private ListView<String> lvChannels, lvUsers;
+	private Label lbNickname;
 	private TextField tfMessage;
 	private HashMap<Session, ListView<String>> sessions;
 	
@@ -55,6 +56,7 @@ public class MainWindow extends Window {
 		
 		lvChannels = new ListView<>(app.getModel().getChannels());	
 		lvUsers = new ListView<>(app.getModel().getUsers());
+		lbNickname = new Label();
 		tfMessage = new TextField();
 		sessions = new HashMap<>();
 		messageTabs = new TabPane();
@@ -74,6 +76,7 @@ public class MainWindow extends Window {
 		
 		VBox rightBox = new VBox(5);
 		rightBox.getChildren().addAll(
+				lbNickname,
 				new Label("Csatornák"),
 				lvChannels,
 				new Label("Felhasználók"),
@@ -104,20 +107,14 @@ public class MainWindow extends Window {
 			}
 		});
 		
-		btnSend.setOnAction(new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> sendAction = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				Tab tab = messageTabs.getSelectionModel().getSelectedItem();
-				String msg = tfMessage.getText();
-				if (tab == null || msg.isEmpty()) return;
-				Session s = (Session) tab.getUserData();
-				String me = app.getModel().getUserInfo().getUserName();
-				Message msgObj = s.roomMsg
-						? new RoomMessage(me, new Date(), s.name, msg)
-				        : new PrivateMessage(me, s.name, new Date(), msg);
-				app.send(msgObj);
+				send();
 			}
-		});
+		};
+		btnSend.setOnAction(sendAction);
+		tfMessage.setOnAction(sendAction);
 		
 		lvChannels.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -174,6 +171,10 @@ public class MainWindow extends Window {
 		lv.getItems().add(msg.getWhen().toString() + " <" + v.from + "> " + msg.getMessage());
 	}
 	
+	public void setDisplayedUsername(String str) {
+		lbNickname.setText(str);
+	}
+	
 	private ListView<String> messageListFor(final Session s) {
 		ListView<String> lv = sessions.get(s);
 		if (lv == null) {
@@ -207,6 +208,19 @@ public class MainWindow extends Window {
 			}
 		}
 		return null;
+	}
+	
+	private void send() {
+		Tab tab = messageTabs.getSelectionModel().getSelectedItem();
+		String msg = tfMessage.getText();
+		if (tab == null || msg.isEmpty()) return;
+		Session s = (Session) tab.getUserData();
+		String me = app.getModel().getUserInfo().getUserName();
+		Message msgObj = s.roomMsg
+				? new RoomMessage(me, new Date(), s.name, msg)
+		        : new PrivateMessage(me, s.name, new Date(), msg);
+		app.send(msgObj);
+		tfMessage.setText("");
 	}
 
 }
