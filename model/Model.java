@@ -1,6 +1,5 @@
 package model;
 
-import java.util.List;
 import java.util.Map.Entry;
 
 import javafx.collections.FXCollections;
@@ -11,7 +10,6 @@ public class Model {
 	private ObservableList<String> channels = FXCollections.observableArrayList();
 	private ObservableList<String> users = FXCollections.observableArrayList();
 	private ObservableList<Message> messages = FXCollections.observableArrayList();
-	private ObservableList<Message> messagesModel;
 	
 	private StatisticsCollector statisticsGenerator;
 	private ObservableList<Statistics> statistics = FXCollections.observableArrayList();
@@ -34,29 +32,7 @@ public class Model {
 	}
 
 	public ObservableList<Message> getMessages() {
-		messagesModel = FXCollections.observableArrayList(messages);
-		return messagesModel;
-	}
-
-	public void applyNoFilter() {
-		messagesModel.clear();
-		messagesModel.addAll(messages);
-	}
-	
-	public void filterPrivates() {
-		for(Message message : messages) {
-			if(!(message instanceof PrivateMessage)) {
-				messagesModel.remove(message);
-			}
-		}
-	}
-	
-	public void filterRoomMessages() {
-		for(Message message : messages) {
-			if(!(message instanceof RoomMessage)) {
-				messagesModel.remove(message);
-			}
-		}		
+		return messages;
 	}
 	
 	public void deleteChatEvent(Message selectedMessage) {

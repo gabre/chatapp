@@ -3,8 +3,11 @@ package view;
 import java.util.Map.Entry;
 
 import model.Message;
+import model.PrivateMessage;
+import model.RoomMessage;
 import model.Statistics;
 import app.ChatClientApplication;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,7 +16,6 @@ import javafx.scene.Parent;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
@@ -30,6 +32,7 @@ import javafx.scene.layout.VBox;
 public class HistoryWindow extends Window {
 	private ListView<Message> listviewLogs;
 	private ListView<Statistics> stats;
+	private ObservableList<Message> processedMessages = FXCollections.observableArrayList();
 	private VBox statsTab;
 
 	private XYChart barChart;
@@ -48,7 +51,7 @@ public class HistoryWindow extends Window {
 		TabPane tabPane = new TabPane();
 		tabPane.tabClosingPolicyProperty().setValue(TabClosingPolicy.UNAVAILABLE);
 		
-		listviewLogs = new ListView<>(app.getModel().getMessages());
+		listviewLogs = new ListView<Message>(processedMessages);
 		VBox logsTab = new VBox(5);
 		HBox controls = new HBox(5);
 		Button deleteBtn = new Button("Delete entry");
@@ -59,11 +62,11 @@ public class HistoryWindow extends Window {
 		ToggleGroup filtering = new ToggleGroup();
 		RadioButton rb1 = new RadioButton("Private messages");
 		rb1.setToggleGroup(filtering);
-		rb1.setSelected(true);
 		RadioButton rb2 = new RadioButton("Room messages");
 		rb2.setToggleGroup(filtering);
 		RadioButton rb3 = new RadioButton("All");
 		rb3.setToggleGroup(filtering);
+		rb3.setSelected(true);
 		
 		deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -88,19 +91,29 @@ public class HistoryWindow extends Window {
 		rb1.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				app.getModel().filterPrivates();
+				processedMessages.clear();
+				for (Message m : app.getModel().getMessages()) {
+					if (m instanceof PrivateMessage) {
+						processedMessages.add(m);
+					}
+				}
 			}
 		});
 		rb2.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				app.getModel().filterRoomMessages();
+				processedMessages.clear();
+				for (Message m : app.getModel().getMessages()) {
+					if (m instanceof RoomMessage) {
+						processedMessages.add(m);
+					}
+				}
 			}
 		});
 		rb3.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				app.getModel().applyNoFilter();
+				refreshLog();
 			}
 		});
 		
@@ -129,6 +142,11 @@ public class HistoryWindow extends Window {
 		mainPane.paddingProperty().set(new Insets(5, 5, 5, 5));
 	
 		return mainPane;
+	}
+	
+	public void refreshLog() {
+		processedMessages.clear();
+		processedMessages.addAll(app.getModel().getMessages());
 	}
 	
 	public void refreshFriendsChart() {

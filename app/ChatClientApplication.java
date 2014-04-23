@@ -119,6 +119,7 @@ public class ChatClientApplication extends Application {
 
 	public void onHistoryWindowOpened() {
 		model.calculateStatistics();
+		historyWin.refreshLog();
 		historyStage.show();	
 	}
 	
