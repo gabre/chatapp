@@ -26,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -35,7 +36,7 @@ public class HistoryWindow extends Window {
 	private ObservableList<Message> processedMessages = FXCollections.observableArrayList();
 	private VBox statsTab;
 
-	private XYChart barChart;
+	private XYChart<String, Number> barChart;
 	
 	public HistoryWindow(ChatClientApplication app) {
 		super(app);
@@ -77,7 +78,7 @@ public class HistoryWindow extends Window {
 				if (selectedOne.size() == 0) {
 					app.showMessage("Please, select an item to delete.");
 				} else {
-					Message selectedMessage = (Message) selectedOne.get(0);
+					Message selectedMessage = selectedOne.get(0);
 					app.getModel().deleteChatEvent(selectedMessage);
 				}
 			}
@@ -119,12 +120,13 @@ public class HistoryWindow extends Window {
 		
 		controls.getChildren().addAll(deleteBtn, clearBtn, rb1, rb2, rb3);
 		logsTab.getChildren().addAll(listviewLogs, controls);
+		VBox.setVgrow(listviewLogs, Priority.ALWAYS);
 		statsTab = new VBox(5);
 		stats = new ListView<Statistics>(app.getModel().getStatistics());
 		
 		Axis<String> xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
-        barChart = new BarChart<String,Number>(xAxis,yAxis);
+        barChart = new BarChart<String, Number>(xAxis,yAxis);
         barChart.setTitle("Best friends");
 
 		
@@ -140,7 +142,8 @@ public class HistoryWindow extends Window {
 		StackPane mainPane = new StackPane();
 		mainPane.getChildren().add(tabPane);
 		mainPane.paddingProperty().set(new Insets(5, 5, 5, 5));
-	
+		mainPane.setPrefHeight(500);
+		
 		return mainPane;
 	}
 	
@@ -150,11 +153,11 @@ public class HistoryWindow extends Window {
 	}
 	
 	public void refreshFriendsChart() {
-		XYChart.Series series = new XYChart.Series();
+		XYChart.Series<String, Number> series = new XYChart.Series<>();
 	    series.setName("Best friends");
 	    ObservableList<Entry<String, Integer>> bestFriends = app.getModel().getBestFriends();
 	    for(Entry<String, Integer> entry : bestFriends) {
-	    	series.getData().add(new XYChart.Data<>(entry.getValue(), entry.getKey()));
+	    	series.getData().add(new XYChart.Data<>(entry.getKey(), (Number)entry.getValue()));
 	    }
 	    barChart.getData().add(series);
 	}

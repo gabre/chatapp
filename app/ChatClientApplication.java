@@ -3,7 +3,6 @@ package app;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -123,6 +122,7 @@ public class ChatClientApplication extends Application {
 	public void onHistoryWindowOpened() {
 		model.calculateStatistics();
 		historyWin.refreshLog();
+		historyWin.refreshFriendsChart();
 		historyStage.show();	
 	}
 	
