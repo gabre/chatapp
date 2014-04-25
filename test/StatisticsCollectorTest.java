@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 
 import model.Model;
 import model.PrivateMessage;
@@ -18,7 +19,8 @@ import org.junit.Test;
 public class StatisticsCollectorTest {
 
 	private static final String userName = "userNAME";
-	private PrivateMessage privateMessage = new PrivateMessage(userName, "to", new Date(), "msg");
+	private String anotherUser = "to1";
+	private PrivateMessage privateMessage = new PrivateMessage(userName, anotherUser, new Date(), "msg");
 	private RoomMessage roomMessage = new RoomMessage(userName, new Date(), "room", "msg");
 
 	@Test
@@ -109,6 +111,24 @@ public class StatisticsCollectorTest {
 		
 		Statistics longStat = getElem(StatisticsCollector.statisticTheWordWithFused, statisticsCollector.getStatistics());
 		assertEquals("1", longStat.getValue());
+	}
+	
+	@Test
+	public void testCollectorBestFriends() {
+		StatisticsCollector statisticsCollector = new StatisticsCollector(userName);
+		String anotherUser2 = "anotherUser2";
+		
+		PrivateMessage privateMessage2 = new PrivateMessage(userName, anotherUser2, new Date(), "anything!");
+		
+		statisticsCollector.visit(privateMessage);
+		statisticsCollector.visit(privateMessage2);
+		
+		List<Entry<String, Integer>> bestFriends = statisticsCollector.getBestFriends();
+		
+		assertEquals(2, bestFriends.size());
+		assertEquals(Integer.valueOf(1), bestFriends.get(0).getValue());
+		assertEquals(Integer.valueOf(1), bestFriends.get(1).getValue());
+		
 	}
 
 	private Statistics getElem(String name, List<Statistics> statistics) {
