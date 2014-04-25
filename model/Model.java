@@ -35,12 +35,11 @@ public class Model {
 		return messages;
 	}
 	
-	public void deleteChatEvent(Message selectedMessage) {
+	public void deleteChatMessage(Message selectedMessage) {
 		messages.remove(selectedMessage);
 	}
 	
-	
-	public void deleteChatEvents() {
+	public void deleteChatMessages() {
 		messages.clear();
 	}
 
@@ -50,6 +49,7 @@ public class Model {
 		for(Message message : messages) {
 			message.acceptVisitor(statisticsGenerator);
 		}
+		
 		statistics.addAll(statisticsGenerator.getStatistics());
 		bestFriends.clear();
 		bestFriends.addAll(statisticsGenerator.getBestFriends());

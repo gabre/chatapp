@@ -79,14 +79,16 @@ public class HistoryWindow extends Window {
 					app.showMessage("Please, select an item to delete.");
 				} else {
 					Message selectedMessage = selectedOne.get(0);
-					app.getModel().deleteChatEvent(selectedMessage);
+					processedMessages.remove(selectedMessage);
+					app.getModel().deleteChatMessage(selectedMessage);
 				}
 			}
 		});
 		clearBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				app.getModel().deleteChatEvents();
+				processedMessages.clear();
+				app.getModel().deleteChatMessages();
 			}
 		});
 		rb1.setOnAction(new EventHandler<ActionEvent>() {

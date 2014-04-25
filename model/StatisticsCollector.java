@@ -10,16 +10,15 @@ import java.util.Map.Entry;
 
 public class StatisticsCollector implements MessageVisitor {
 
-	private static final String BEST_FRIEND = "Best friend";
-	private static final String sentPrivates = "Sent privates";
-	private static final String receivedPrivates = "Received privates";
-	private static final String privates = "All privates";
-	private static final String shortPrivates = "Very short private messages";
-	private static final String longPrivates = "Very long private messages";
+	public static final String statisticSentPrivates = "Sent privates";
+	public static final String statisticReceivedPrivates = "Received privates";
+	public static final String statisticPrivates = "All privates";
+	public static final String statisticShortPrivates = "Very short private messages";
+	public static final String statisticLongPrivates = "Very long private messages";
 	
-	private static final String theWordWithFused = "The word with F used (Fu@k)";
-	private static final String roomMsgs = "Room messages sent";
-	private static final String tooLoud = "Too loud messages";
+	public static final String statisticTheWordWithFused = "The word with F used (Fu@k)";
+	public static final String statisticRoomMsgs = "Room messages sent";
+	public static final String statisticTooLoud = "Too loud messages";
 	
 	private static final int longMsgMinLength = 100;
 	private static final int shortMsgMaxLength = 15;
@@ -40,7 +39,7 @@ public class StatisticsCollector implements MessageVisitor {
 	public void visit(PrivateMessage message) {
 		incrementSentPrivatesIfNeeded(message);
 		incrementReceivedPrivatesIfNeeded(message);
-		increaseStatisticValue(privates);
+		increaseStatisticValue(statisticPrivates);
 		incrementLongPrivatesIfNeeded(message);
 		incrementShortPrivatesIfNeeded(message);
 		incrementFWordIfNeeded(message);
@@ -51,7 +50,7 @@ public class StatisticsCollector implements MessageVisitor {
 	@Override
 	public void visit(RoomMessage message) {
 		incrementFWordIfNeeded(message);
-		increaseStatisticValue(roomMsgs);
+		increaseStatisticValue(statisticRoomMsgs);
 		incrementTooLoud(message);
 	}
 	
@@ -95,37 +94,37 @@ public class StatisticsCollector implements MessageVisitor {
 	
 	private void incrementTooLoud(Message message) {
 		if(message.getMessage().toUpperCase().equals(message.getMessage())) {
-			increaseStatisticValue(tooLoud);
+			increaseStatisticValue(statisticTooLoud);
 		}
 	}
 	
 	private void incrementFWordIfNeeded(Message message) {
 		if(message.getMessage().toLowerCase().contains(fWord)) {
-			increaseStatisticValue(theWordWithFused);
+			increaseStatisticValue(statisticTheWordWithFused);
 		}
 	}
 
 	private void incrementLongPrivatesIfNeeded(PrivateMessage message) {
 		if(message.getMessage().length() >= longMsgMinLength) {
-			increaseStatisticValue(longPrivates);
+			increaseStatisticValue(statisticLongPrivates);
 		}
 	}
 	
 	private void incrementShortPrivatesIfNeeded(PrivateMessage message) {
 		if(message.getMessage().length() <= shortMsgMaxLength) {
-			increaseStatisticValue(shortPrivates);
+			increaseStatisticValue(statisticShortPrivates);
 		}
 	}
 	
 	private void incrementSentPrivatesIfNeeded(PrivateMessage message) {
 		if(message.getFromUserName().equals(user)) {
-			increaseStatisticValue(sentPrivates);
+			increaseStatisticValue(statisticSentPrivates);
 		}
 	}
 	
 	private void incrementReceivedPrivatesIfNeeded(PrivateMessage message) {
 		if(message.getToUserName().equals(user)) {
-			increaseStatisticValue(receivedPrivates);
+			increaseStatisticValue(statisticReceivedPrivates);
 		}
 	}
 
@@ -135,14 +134,14 @@ public class StatisticsCollector implements MessageVisitor {
 	}
 	
 	private void addAllStatistic() {
-		statistics.put(sentPrivates, 0);
-		statistics.put(receivedPrivates, 0);
-		statistics.put(privates, 0);
-		statistics.put(shortPrivates, 0);
-		statistics.put(longPrivates, 0);
-		statistics.put(theWordWithFused, 0);
-		statistics.put(roomMsgs, 0);
-		statistics.put(tooLoud, 0);
+		statistics.put(statisticSentPrivates, 0);
+		statistics.put(statisticReceivedPrivates, 0);
+		statistics.put(statisticPrivates, 0);
+		statistics.put(statisticShortPrivates, 0);
+		statistics.put(statisticLongPrivates, 0);
+		statistics.put(statisticTheWordWithFused, 0);
+		statistics.put(statisticRoomMsgs, 0);
+		statistics.put(statisticTooLoud, 0);
 	}
 
 }
