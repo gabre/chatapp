@@ -35,7 +35,6 @@ public class Connection {
 	
 	public ServerEvent receive() throws IOException {
 		String msg = input.readLine();
-		System.out.println(msg);
 		String[] words = msg.split("\\s+");
 		
 		if (words.length == 0) {

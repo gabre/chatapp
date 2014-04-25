@@ -146,7 +146,6 @@ public class MainWindow extends Window {
 	}
 
 	public void onMessage(Message msg) {
-		System.out.println(msg.toString());
 		class TmpVisitor implements MessageVisitor {
 			public Session s;
 			public String from;

@@ -26,6 +26,8 @@ public class TestServer {
 			System.out.println(msg);
 			output.write("MSG #husoskenyer sanyika üzenetet küldött a kliens");
 			output.newLine();
+			output.write("PRIVMSG pistike szia én vagyok a pistike :3");
+			output.newLine();
 			output.flush();
 		}
 	}
