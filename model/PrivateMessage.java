@@ -19,4 +19,9 @@ public class PrivateMessage extends Message {
 		return toUserName;
 	}
 
+	@Override
+	public String toString() {
+		return fromUserName + "~>" + toUserName + "[" + when.toString() + "]: " + message;
+	}
+
 }

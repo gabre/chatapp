@@ -2,10 +2,10 @@ package model;
 
 import java.util.Date;
 
-public abstract class Message extends ChatElement {
-	private Date when;
-	private String fromUserName;
-	private String message;
+public abstract class Message {
+	protected Date when;
+	protected String fromUserName;
+	protected String message;
 	
 	Message(String fromUserName, Date when, String message) {
 		this.fromUserName = fromUserName;
@@ -26,4 +26,6 @@ public abstract class Message extends ChatElement {
 	public String getMessage() {
 		return message;
 	}
+
+	public abstract String toString();
 }

@@ -19,4 +19,9 @@ public class RoomMessage extends Message {
 	public String getRoomName() {
 		return roomName;
 	}
+
+	@Override
+	public String toString() {
+		return fromUserName + "[" + when.toString() + "]: " + message;
+	}
 }
