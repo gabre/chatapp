@@ -22,7 +22,7 @@ public class TestServer {
 		
 		while (true) {
 			String msg = input.readLine();
-			if (msg == null) return;
+			if (msg == null || msg.equals("QUIT")) break;
 			System.out.println(msg);
 			output.write("MSG #husoskenyer sanyika üzenetet küldött a kliens");
 			output.newLine();
@@ -30,6 +30,8 @@ public class TestServer {
 			output.newLine();
 			output.flush();
 		}
+		client.close();
+		sock.close();
 	}
 
 }

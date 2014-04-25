@@ -62,6 +62,9 @@ public class ChatClientApplication extends Application {
         EventHandler<WindowEvent> exitAction = new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
+				if (conn != null) {
+					conn.close();
+				}
 				System.exit(0);
 			}
         };
