@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class HistoryWindow extends Window {
+	private static final int MAXIMAL_NUMBER_OF_BARS = 5;
 	private ListView<Message> listviewLogs;
 	private ListView<Statistics> stats;
 	private ObservableList<Message> processedMessages = FXCollections.observableArrayList();
@@ -158,8 +159,11 @@ public class HistoryWindow extends Window {
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
 	    series.setName("Best friends");
 	    ObservableList<Entry<String, Integer>> bestFriends = app.getModel().getBestFriends();
-	    for(Entry<String, Integer> entry : bestFriends) {
+	    int i = 0;
+	    while(i < bestFriends.size() && i < MAXIMAL_NUMBER_OF_BARS) {
+	    	Entry<String, Integer> entry = bestFriends.get(i);
 	    	series.getData().add(new XYChart.Data<>(entry.getKey(), (Number)entry.getValue()));
+	    	++ i;
 	    }
 	    barChart.getData().add(series);
 	}
