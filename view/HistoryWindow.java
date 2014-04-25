@@ -156,6 +156,7 @@ public class HistoryWindow extends Window {
 	}
 	
 	public void refreshFriendsChart() {
+		barChart.getData().clear();
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
 	    series.setName("Best friends");
 	    ObservableList<Entry<String, Integer>> bestFriends = app.getModel().getBestFriends();
