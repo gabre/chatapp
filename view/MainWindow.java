@@ -46,7 +46,7 @@ public class MainWindow extends Window {
 	
 	private ListView<String> lvChannels, lvUsers;
 	private Label lbNickname;
-	private TextField tfMessage;
+	private TextField tfMessage, tfChannel;
 	private HashMap<Session, ListView<String>> sessions;
 	
 	private TabPane messageTabs;
@@ -58,6 +58,9 @@ public class MainWindow extends Window {
 		lvUsers = new ListView<>(app.getModel().getUsers());
 		lbNickname = new Label();
 		tfMessage = new TextField();
+		tfChannel = new TextField();
+		tfChannel.setPromptText("Új csatorna");
+		tfChannel.setMinHeight(TextField.USE_PREF_SIZE);
 		sessions = new HashMap<>();
 		messageTabs = new TabPane();
 	}
@@ -79,6 +82,7 @@ public class MainWindow extends Window {
 				lbNickname,
 				new Label("Csatornák"),
 				lvChannels,
+				tfChannel,
 				new Label("Felhasználók"),
 				lvUsers);
 		rightBox.setPrefHeight(400);
@@ -115,6 +119,15 @@ public class MainWindow extends Window {
 		};
 		btnSend.setOnAction(sendAction);
 		tfMessage.setOnAction(sendAction);
+		
+		tfChannel.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String chan = tfChannel.getText();
+				if (chan.isEmpty()) return;
+				app.getConn().sendJoin(chan);
+			}
+		});
 		
 		lvChannels.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override

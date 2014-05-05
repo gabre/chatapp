@@ -17,6 +17,7 @@ public class Model {
 	
 	public void startConnection(String userName) {
 		userInfo = new UserSettings(userName);
+		users.add(userName);
 	}
 	
 	public UserSettings getUserInfo() {
@@ -37,10 +38,12 @@ public class Model {
 	
 	public void deleteChatMessage(Message selectedMessage) {
 		messages.remove(selectedMessage);
+		calculateStatistics();
 	}
 	
 	public void deleteChatMessages() {
 		messages.clear();
+		calculateStatistics();
 	}
 
 	public void calculateStatistics() {
