@@ -10,13 +10,19 @@ import java.net.Socket;
 public class ServerUserThread extends Thread {
 	Socket socket;
 	Server server;
-	private int id = -1;
+	int id = -1;
 	String username = "";
 	private BufferedReader streamIn = null;
 	private BufferedWriter streamOut = null;
 
 	public int getID() {
 		return id;
+	}
+	
+	ServerUserThread(Server server, int id) {
+		this.socket = null;
+		this.server = server;
+		this.id = id;
 	}
 	
 	ServerUserThread(Server server, Socket socket) {

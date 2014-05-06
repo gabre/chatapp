@@ -25,6 +25,10 @@ public class Server {
 		try	{
 			ServerSocket serverSocket = new ServerSocket(port);
 			serverSocket.setReuseAddress(true);
+			
+			ServerUserThread bot = new AnnouncerBot(this, 23456);
+			ServerUserThreads.add(bot);
+			bot.start();
 
 			while(running) {				
 				Socket socket = serverSocket.accept();
@@ -48,6 +52,7 @@ public class Server {
 		catch (IOException e) {
             String msg = " Exception on new ServerSocket: " + e + "\n";
             System.out.println(msg);
+            e.printStackTrace();
 		}
 	}
 
