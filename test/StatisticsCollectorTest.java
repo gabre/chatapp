@@ -7,12 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
-import model.Model;
 import model.PrivateMessage;
 import model.RoomMessage;
 import model.Statistics;
 import model.StatisticsCollector;
-import model.UserSettings;
 
 import org.junit.Test;
 
@@ -31,7 +29,7 @@ public class StatisticsCollectorTest {
 		Statistics stat = getElem(StatisticsCollector.statisticSentPrivates, statisticsCollector.getStatistics());
 		assertEquals("1", stat.getValue());
 		Statistics roomStat = getElem(StatisticsCollector.statisticRoomMsgs, statisticsCollector.getStatistics());
-		assertEquals("1", stat.getValue());
+		assertEquals("1", roomStat.getValue());
 	}
 	
 	@Test
@@ -104,7 +102,7 @@ public class StatisticsCollectorTest {
 	public void testCollectorFWordMessages() {
 		StatisticsCollector statisticsCollector = new StatisticsCollector(userName);
 		
-		PrivateMessage fWord = new PrivateMessage(userName, "user222", new Date(), "fuck!");
+		PrivateMessage fWord = new PrivateMessage(userName, "user222", new Date(), "francba!");
 		
 		statisticsCollector.visit(privateMessage);
 		statisticsCollector.visit(fWord);

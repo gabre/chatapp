@@ -10,19 +10,19 @@ import java.util.Map.Entry;
 
 public class StatisticsCollector implements MessageVisitor {
 
-	public static final String statisticSentPrivates = "Sent privates";
-	public static final String statisticReceivedPrivates = "Received privates";
-	public static final String statisticPrivates = "All privates";
-	public static final String statisticShortPrivates = "Very short private messages";
-	public static final String statisticLongPrivates = "Very long private messages";
+	public static final String statisticSentPrivates = "Elküldött privát üzenetek";
+	public static final String statisticReceivedPrivates = "Fogadott privát üzenetek";
+	public static final String statisticPrivates = "Összes privát üzenet";
+	public static final String statisticShortPrivates = "Rövid privát üzenetek";
+	public static final String statisticLongPrivates = "Hosszú privát üzenetek";
 	
-	public static final String statisticTheWordWithFused = "The word with F used (Fu@k)";
-	public static final String statisticRoomMsgs = "Room messages sent";
-	public static final String statisticTooLoud = "Too loud messages";
+	public static final String statisticTheWordWithFused = "Az F betûs szó használata (franc)";
+	public static final String statisticRoomMsgs = "Elküldött szobaüzenetek";
+	public static final String statisticTooLoud = "Kiabálás";
 	
 	private static final int longMsgMinLength = 100;
 	private static final int shortMsgMaxLength = 15;
-	private static final String fWord = "fuck";
+	private static final String fWord = "franc";
 	
 	private String user;
 	private Map<String,Integer> statistics;
