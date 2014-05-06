@@ -56,17 +56,17 @@ public class HistoryWindow extends Window {
 		listviewLogs = new ListView<Message>(processedMessages);
 		VBox logsTab = new VBox(5);
 		HBox controls = new HBox(5);
-		Button deleteBtn = new Button("Delete entry");
-		Button clearBtn = new Button("Clear");
+		Button deleteBtn = new Button("Elem törlése");
+		Button clearBtn = new Button("Összes törlése");
 		deleteBtn.setMinSize(50, 20);
 		clearBtn.setMinSize(50, 20);
 		
 		ToggleGroup filtering = new ToggleGroup();
-		RadioButton rb1 = new RadioButton("Private messages");
+		RadioButton rb1 = new RadioButton("Privát üzenetek");
 		rb1.setToggleGroup(filtering);
-		RadioButton rb2 = new RadioButton("Room messages");
+		RadioButton rb2 = new RadioButton("Szobaüzenetek");
 		rb2.setToggleGroup(filtering);
-		RadioButton rb3 = new RadioButton("All");
+		RadioButton rb3 = new RadioButton("Összes");
 		rb3.setToggleGroup(filtering);
 		rb3.setSelected(true);
 		
@@ -77,7 +77,7 @@ public class HistoryWindow extends Window {
 				ObservableList<Message> selectedOne = listviewLogs.getSelectionModel()
 						.getSelectedItems();
 				if (selectedOne.size() == 0) {
-					app.showMessage("Please, select an item to delete.");
+					app.showMessage("Kérlek, válassz ki egy elemet a törléshez.");
 				} else {
 					Message selectedMessage = selectedOne.get(0);
 					processedMessages.remove(selectedMessage);
@@ -130,7 +130,7 @@ public class HistoryWindow extends Window {
 		Axis<String> xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         barChart = new BarChart<String, Number>(xAxis,yAxis);
-        barChart.setTitle("Best friends");
+        barChart.setTitle("Legjobb barátok");
 
 		
 		statsTab.getChildren().addAll(stats, barChart);
@@ -158,7 +158,7 @@ public class HistoryWindow extends Window {
 	public void refreshFriendsChart() {
 		barChart.getData().clear();
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
-	    series.setName("Best friends");
+	    series.setName("Legjobb barátok");
 	    ObservableList<Entry<String, Integer>> bestFriends = app.getModel().getBestFriends();
 	    int i = 0;
 	    while(i < bestFriends.size() && i < MAXIMAL_NUMBER_OF_BARS) {
