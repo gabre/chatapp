@@ -128,7 +128,7 @@ public class Server {
 			else {
 				if(!rooms.containsKey(roomname)) {
 					rooms.put(roomname, new ArrayList<String>());
-					broadcast("CHAN+ " + roomname, client.getID());
+					broadcast("CHAN+ " + roomname, -1);
 				}
 				
 				if(!rooms.get(roomname).contains(client.username))

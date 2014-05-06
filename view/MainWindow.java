@@ -124,8 +124,11 @@ public class MainWindow extends Window {
 			@Override
 			public void handle(ActionEvent event) {
 				String chan = tfChannel.getText();
-				if (chan.isEmpty()) return;
-				app.getConn().sendJoin(chan);
+				if (chan.isEmpty() || app.getModel().getChannels().contains(chan)) return;
+				Session s = new Session(true, chan);
+				if (getTabFor(s) != null) return;
+				messageListFor(s);
+				messageTabs.getSelectionModel().select(getTabFor(s));
 			}
 		});
 		
