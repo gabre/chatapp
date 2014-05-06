@@ -26,7 +26,11 @@ public class Server {
 			ServerSocket serverSocket = new ServerSocket(port);
 			serverSocket.setReuseAddress(true);
 			
-			ServerUserThread bot = new AnnouncerBot(this, 23456);
+			ServerUserThread bot = new AnnouncerBot(this, 23456, "AnnouncerBot", 1000, "a", "szia");
+			ServerUserThreads.add(bot);
+			bot.start();
+			
+			bot = new EchoBot(this, 23457, "EchoBot", "echo");
 			ServerUserThreads.add(bot);
 			bot.start();
 
@@ -61,7 +65,7 @@ public class Server {
 		while(iter.hasNext())
 		{
 			ServerUserThread thread = users.get(iter.next());
-			if(	thread.getID() != sender && !thread.send(message))
+			if (thread == null || (thread.getID() != sender && !thread.send(message)))
 				iter.remove();
 		}
 	}
@@ -116,6 +120,9 @@ public class Server {
 				for(String user : users.keySet())
 					userlist += "USER+ " + user + "\n";
 				client.send(userlist);
+				
+				for (String room : rooms.keySet())
+					client.send("CHAN+ " + room);
 				
 				addUser(username, client);
 			}

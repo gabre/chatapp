@@ -3,17 +3,30 @@ package server;
 public class Bot extends ServerUserThread {
 	
 	boolean running = false;
+	
+	String name;
 
-	Bot(Server server, int id) {
+	Bot(Server server, int id, String name) {
 		super(server, id);
+		this.name = name;
 	}
 	
 	void Update() throws Exception {
 	}
+	
+	void ProcessMessage(String msg) {
+	}
+	
+	void Connect() {
+	}
+	
+	void SendMessage(String msg) {
+		server.handle(this, msg);
+	}
 
 	public void run() {
-		server.handle(this, "CONNECT bot");
-		server.handle(this, "JOIN a");
+		server.handle(this, "CONNECT " + name);
+		Connect();
 		running = true;
 		while (running) {
 			try {
@@ -27,6 +40,7 @@ public class Bot extends ServerUserThread {
 	}
 	
 	public boolean send(String msg) {
+		ProcessMessage(msg);
 		System.out.println("bot got: " + msg);
 		return true;
 	}
