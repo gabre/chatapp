@@ -1,8 +1,8 @@
 package server;
 
-public class EchoBot extends Bot {
-
-	EchoBot(Server server, int id, String name, String room) {
+public class ReplyBot extends Bot {
+	
+	ReplyBot(Server server, int id, String name, String room) {
 		super(server, id, name, room);
 	}
 
@@ -15,7 +15,9 @@ public class EchoBot extends Bot {
 			else {
 				String roomname = commandSuffix.substring(0, firstSpace);
 				String message = commandSuffix.substring(firstSpace+1);
-				SendMessage("MSG " + roomname + " " + message);
+				if (message.contains(this.name)) {
+					SendMessage("MSG " + roomname + " én?");
+				}
 			}
 		}
 	}

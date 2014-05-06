@@ -5,10 +5,12 @@ public class Bot extends ServerUserThread {
 	boolean running = false;
 	
 	String name;
+	String room;
 
-	Bot(Server server, int id, String name) {
+	Bot(Server server, int id, String name, String room) {
 		super(server, id);
 		this.name = name;
+		this.room = room;
 	}
 	
 	void Update() throws Exception {
@@ -26,6 +28,7 @@ public class Bot extends ServerUserThread {
 
 	public void run() {
 		server.handle(this, "CONNECT " + name);
+		server.handle(this, "JOIN " + room);
 		Connect();
 		running = true;
 		while (running) {

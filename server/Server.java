@@ -20,19 +20,31 @@ public class Server {
 		serverlog = new ArrayList<String>();
 	}
 	
+	private void AddBots() {
+		ServerUserThread bot = new AnnouncerBot(this, 23456, "AnnouncerBot", 5000, "ann", "szia");
+		ServerUserThreads.add(bot);
+		bot.start();
+		
+		bot = new EchoBot(this, 23457, "EchoBot", "echo");
+		ServerUserThreads.add(bot);
+		bot.start();
+		
+		bot = new ReplyBot(this, 23458, "ReplyBot", "reply");
+		ServerUserThreads.add(bot);
+		bot.start();
+		
+		bot = new GameBot(this, 23459, "GameBot", "game");
+		ServerUserThreads.add(bot);
+		bot.start();
+	}
+	
 	public void start() {
 		running = true;
 		try	{
 			ServerSocket serverSocket = new ServerSocket(port);
 			serverSocket.setReuseAddress(true);
-			
-			ServerUserThread bot = new AnnouncerBot(this, 23456, "AnnouncerBot", 1000, "a", "szia");
-			ServerUserThreads.add(bot);
-			bot.start();
-			
-			bot = new EchoBot(this, 23457, "EchoBot", "echo");
-			ServerUserThreads.add(bot);
-			bot.start();
+
+			AddBots();
 
 			while(running) {				
 				Socket socket = serverSocket.accept();
