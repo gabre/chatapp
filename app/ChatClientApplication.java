@@ -128,7 +128,18 @@ public class ChatClientApplication extends Application {
 		dialogStage.show();
 		mainStage.hide();
 		connectStage.show();
-		//model.reset();
+		model.reset();
+	}
+	
+	public void onServerError(String msg, boolean fatal) {
+		dialogStage = createWin(new ModalWindow("Hiba", msg, this));
+		dialogStage.show();
+		if (fatal) {
+			conn.close();
+			mainStage.hide();
+			connectStage.show();
+			model.reset();
+		}
 	}
 
 	public Model getModel() {

@@ -34,7 +34,12 @@ public class Connection {
 	}
 	
 	public ServerEvent receive() throws IOException {
-		String msg = input.readLine();
+		String msg;
+		try {
+		msg = input.readLine();
+		} catch (Exception e) {
+			return new ServerEvent(ServerEvent.Type.SERVER_FATAL, new String[] {"SRVFATAL", "Megszakadt a kapcsolat."});
+		}
 		String[] words = msg.split("\\s+");
 		
 		if (words.length == 0) {
@@ -60,6 +65,12 @@ public class Connection {
 			break;
 		case "PRIVMSG":
 			type = ServerEvent.Type.PRIV_MSG;
+			break;
+		case "SRVERR":
+			type = ServerEvent.Type.SERVER_ERROR;
+			break;
+		case "SRVFATAL":
+			type = ServerEvent.Type.SERVER_FATAL;
 			break;
 		}
 		

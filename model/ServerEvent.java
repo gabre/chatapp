@@ -3,7 +3,7 @@ package model;
 public class ServerEvent {
 	public enum Type {
 		USER_JOINED, USER_LEFT, CHAN_CREATED, CHAN_DESTROYED,
-		CHAN_MSG, PRIV_MSG
+		CHAN_MSG, PRIV_MSG, SERVER_ERROR, SERVER_FATAL
 	}
 	
 	private Type type;

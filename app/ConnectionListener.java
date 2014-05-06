@@ -67,6 +67,12 @@ public class ConnectionListener extends Task<Void> {
 							app.getModel().getMessages().add(new PrivateMessage(from, userName, new Date(), msg));
 							break;
 						}
+						case SERVER_ERROR:
+							app.onServerError(unwordsFrom(1, event.getArgs()), false);
+							break;
+						case SERVER_FATAL:
+							app.onServerError(unwordsFrom(1, event.getArgs()), true);
+							break;
 						}
 					}
 				});

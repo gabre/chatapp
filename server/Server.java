@@ -100,9 +100,9 @@ public class Server {
 			String username = input.substring(8).trim();
 			
 			if(!validName(username))
-				client.send("SRVERR Felhasználónév csak a következõ betûkbõl állhat: a-z, A-Z, 0-9, _ !");
+				client.send("SRVFATAL Felhasználónév csak a következõ betûkbõl állhat: a-z, A-Z, 0-9, _ !");
 			else if(users.containsKey(username))
-				client.send("SRVERR Felhasználónév használatban!");
+				client.send("SRVFATAL Felhasználónév használatban!");
 			else
 			{
 				broadcast("USER+ " + username, client.getID());

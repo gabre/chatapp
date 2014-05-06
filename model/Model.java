@@ -17,7 +17,6 @@ public class Model {
 	
 	public void startConnection(String userName) {
 		userInfo = new UserSettings(userName);
-		users.add(userName);
 	}
 	
 	public UserSettings getUserInfo() {
@@ -64,6 +63,14 @@ public class Model {
 	
 	public ObservableList<Entry<String, Integer>> getBestFriends() {
 		return bestFriends;
+	}
+
+	public void reset() {
+		channels.clear();
+		users.clear();
+		messages.clear();
+		statistics.clear();
+		bestFriends.clear();
 	}
 
 }
