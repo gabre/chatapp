@@ -100,9 +100,9 @@ public class Server {
 			String username = input.substring(8).trim();
 			
 			if(!validName(username))
-				client.send("SRVMSG Username can only contain a-z, A-Z, 0-9, _ !");
+				client.send("SRVERR Felhasználónév csak a következõ betûkbõl állhat: a-z, A-Z, 0-9, _ !");
 			else if(users.containsKey(username))
-				client.send("SRVMSG Username in use!");
+				client.send("SRVERR Felhasználónév használatban!");
 			else
 			{
 				broadcast("USER+ " + username, client.getID());
@@ -124,7 +124,7 @@ public class Server {
 			String roomname = input.substring(5).trim();
 			
 			if(!validName(roomname))
-				client.send("SRVMSG Room name can only contain a-z, A-Z, 0-9, _ !");
+				client.send("SRVERR Szobanév csak a következõ betûkbõl állhat: a-z, A-Z, 0-9, _ !");
 			else {
 				if(!rooms.containsKey(roomname)) {
 					rooms.put(roomname, new ArrayList<String>());
@@ -142,9 +142,9 @@ public class Server {
 			String roomname = input.substring(5).trim();
 			
 			if(!rooms.containsKey(roomname))
-				client.send("SRVMSG Room doesn't exist!");
+				client.send("SRVERR Szoba nem létezik!");
 			else if (!rooms.get(roomname).contains(client.username))
-				client.send("SRVMSG Not a member of this room!");
+				client.send("SRVERR Nem a szoba tagja!");
 			else {
 				rooms.get(roomname).remove(client.username);
 				sendRoom(roomname, "USER- " + roomname + client.username, client.getID());
@@ -158,12 +158,12 @@ public class Server {
 			String commandSuffix = input.substring(4).trim();
 			int firstSpace = commandSuffix.indexOf(' ');
 			if (firstSpace == -1)
-				client.send("SRVMSG No message given!");
+				client.send("SRVERR Nincs üzenet megadva!");
 			else {
 				String roomname = commandSuffix.substring(0, firstSpace);
 				String message = commandSuffix.substring(firstSpace+1);
 				if(!rooms.containsKey(roomname))
-					client.send("SRVMSG Room doesn't exist!");
+					client.send("SRVERR Szoba nem létezik!");
 				else
 					sendRoom(roomname, "MSG " + roomname + " " + client.username + " " + message, client.getID());
 			}
@@ -172,12 +172,12 @@ public class Server {
 			String commandSuffix = input.substring(8).trim();
 			int firstSpace = commandSuffix.indexOf(' ');
 			if (firstSpace == -1)
-				client.send("SRVMSG No message given!");
+				client.send("SRVERR Nincs üzenet megadva!");
 			else {
 				String username = commandSuffix.substring(0, firstSpace);
 				String message = commandSuffix.substring(firstSpace+1);
 				if(!users.containsKey(username))
-					client.send("SRVMSG User doesn't exist!");
+					client.send("SRVERR Felhasználó nem létezik!");
 				else
 					users.get(username).send("PRIVMSG " + client.username + " " + message);
 			}
@@ -185,7 +185,7 @@ public class Server {
 		else if(input.equals("USERLIST")) {
 			String userlist = new String();			
 			for(String user : users.keySet())
-				userlist += user + ",";
+				userlist += user + " ";
 			client.send(userlist);
 		}
 	}
